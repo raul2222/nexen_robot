@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <thread>
+#include "render.h"
 
 ///////////////////////////////////////////////////////////////
 std::shared_ptr<rclcpp::Node> node = nullptr;
@@ -46,6 +47,7 @@ sy3::sy3_intrinsics intrinsics;
 sy3::device *dev;
 
 uint16_t filter_value = 0;
+uint16_t max_value = 0;
 
 void calculate_framerate()
 {
@@ -65,6 +67,7 @@ void calculate_framerate()
 }
 
 void config(){
+
     sy3::sy3_error e;
 	printf("version:%s \n", sy3::sy3_get_version(e));
 	sy3::context *ctx = sy3::sy3_create_context(e);
@@ -109,10 +112,9 @@ void show_depth_frame(sy3::depth_frame *frame)
          frame->get_width(), CV_16UC1, frame->get_data());
 
         sensor_msgs::msg::Image::SharedPtr depth_image;
-        //sensor_msgs::ImagePtr& depth_image = cv_bridge::CvImage(std_msgs::msg::Header(), sensor_msgs::image_encodings::TYPE_16UC1, depth_frame_buffer_mat).toImageMsg();
         depth_image = cv_bridge::CvImage(std_msgs::msg::Header(), sensor_msgs::image_encodings::TYPE_16UC1, depth_frame_buffer_mat).toImageMsg();
 
-        std::string frame_tf = "tf2_frame";
+        std::string frame_tf = "face_link";
         rclcpp::Time time = rclcpp::Clock().now();
 
 		depth_image->header.stamp = time;
@@ -120,7 +122,7 @@ void show_depth_frame(sy3::depth_frame *frame)
         
         camera_info.header.frame_id = frame_tf;
         camera_info.header.stamp = time;
-        //sy3::sy3_intrinsics intrinsics = frame->get_profile()->get_intrinsics();
+
 
         camera_info.width = intrinsics.width;
         camera_info.height = intrinsics.height;
@@ -221,6 +223,10 @@ void timerCallback()
 	}
 	else{
 
+        if (max_value == 3500){
+            config2 == true;
+        }
+
         if(g_frame_count % 450 == 0 && config1 == false) {
             dev->get_sensor(e)->set_option(sy3::sy3_option::SY3_OPTION_DEPTH_IMAGE_FILTER, filter_value, e);
             filter_value = !filter_value;
@@ -231,17 +237,22 @@ void timerCallback()
         }
 
         if(g_frame_count % 550 == 0 && config2 == false) {
-            dev->get_sensor(e)->set_option(sy3::sy3_option::SY3_OPTION_DISTANCE_RANGE, 2500,20, e);
+            dev->get_sensor(e)->set_option(sy3::sy3_option::SY3_OPTION_DISTANCE_RANGE, 3500,10, e);
 
-            uint16_t min = 0;uint16_t max = 0;
-			dev->get_sensor(e)->get_option(sy3::sy3_option::SY3_OPTION_DISTANCE_RANGE, min, max, e);
-			printf("min %d max %d \n", min, max);
-            config2 = true;
+            uint16_t min = 0;
+			dev->get_sensor(e)->get_option(sy3::sy3_option::SY3_OPTION_DISTANCE_RANGE, min, max_value, e);
+			printf("min %d max %d \n", min, max_value);
+            
         }
 
 
         intrinsics = depth_frame->get_profile()->get_intrinsics();
-		show_depth_frame(depth_frame);		
+		
+        if(g_frame_count % 2350 == 0){
+            print_intri(intrinsics);
+        }
+        
+        show_depth_frame(depth_frame);		
 
 	}
     
@@ -263,7 +274,7 @@ int main(int argc, char * argv[]) {
     node = std::make_shared<rclcpp::Node>("cs_20");
 
     auto timer = node->create_wall_timer(
-    std::chrono::milliseconds(20), timerCallback);
+    std::chrono::milliseconds(25), timerCallback);
 
     rclcpp::executors::MultiThreadedExecutor executor(
     rclcpp::executor::ExecutorArgs(), 4);

@@ -85,7 +85,7 @@
     </link>
 
     <gazebo reference="chassis">
-        <material>Gazebo/Orange</material>
+        <material>Gazebo/White</material>
     </gazebo>
 
     <!-- LEFT WHEEL LINK -->

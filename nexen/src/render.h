@@ -2,8 +2,8 @@
 #define LIBSYNEXENS3_EXAMPLES_DEPTH_H
 
 #include <opencv2/opencv.hpp>
-#include<opencv2/imgproc/imgproc.hpp>
-#include"libsynexens3/libsynexens3.h"
+#include <opencv2/imgproc/imgproc.hpp>
+#include "libsynexens3/libsynexens3.h"
 
 #define IR_WINDOW_NAME "IR"
 #define COLOR_MAP_WINDOW_NAME "COLOR_MAP"
