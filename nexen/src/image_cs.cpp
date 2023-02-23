@@ -40,7 +40,8 @@ volatile int g_frame_count = 0;
 int nIndex = 0;
 volatile bool config1 = false;
 volatile bool config2 = false;
-
+volatile bool config3 = false;
+uint16_t exposure = 0;
 std::thread fpsThread;
 sy3::pipeline *pline;
 sy3::sy3_intrinsics intrinsics;
@@ -224,9 +225,12 @@ void timerCallback()
 	else{
 
         if (max_value == 3500){
+           
             config2 == true;
         }
-
+        if (exposure == 1999){
+            config3 == true;
+        }
         if(g_frame_count % 450 == 0 && config1 == false) {
             dev->get_sensor(e)->set_option(sy3::sy3_option::SY3_OPTION_DEPTH_IMAGE_FILTER, filter_value, e);
             filter_value = !filter_value;
@@ -244,11 +248,18 @@ void timerCallback()
 			printf("min %d max %d \n", min, max_value);
             
         }
-
+        if(g_frame_count % 750 == 0 && config3 == false) {
+            //dev->get_sensor(e)->set_option(sy3::sy3_option::SY3_OPTION_DISTANCE_RANGE, 3500,10, e);
+            dev->get_sensor(e)->set_option(sy3::sy3_option::SY3_OPTION_EXPOSURE, 1999, e);
+            
+			dev->get_sensor(e)->get_option(sy3::sy3_option::SY3_OPTION_EXPOSURE, exposure, e);
+			printf("max %d \n",  exposure);
+            
+        }
 
         intrinsics = depth_frame->get_profile()->get_intrinsics();
 		
-        if(g_frame_count % 2350 == 0){
+        if(g_frame_count % 9350 == 0){
             print_intri(intrinsics);
         }
         
