@@ -16,13 +16,13 @@ def generate_launch_description():
                 # The resolution of the depth frame. Options are: 240P, 480P
                 'depth_resolution': '240P',
                 # Enable or disable the ir camera
-                'ir_enabled': True,
+                'ir_enabled': False,
                 # Enable or disable the color camera
-                'color_enabled': True,
+                'color_enabled': False,
                 # Resolution at which to run the color camera. Valid options: 1080P
                 'color_resolution': '1080P',
                 # The FPS of the RGB and Depth cameras. Options are: 5, 7, 15, 30
-                'fps': 30,
+                'fps': 15,
                 # Generate a point cloud from depth data. Requires depth_enabled
                 'point_cloud_enabled': True,
                 # True if mapped depth in color space should be enabled, only valid in depth480P rgb1080P
@@ -50,7 +50,7 @@ def generate_launch_description():
                 # 0 to Disable Depth image Mirror, 1 to Enable. Use default setting if value=-1
                 'depth_image_mirror': -1,
                 # 0 to Disable Depth image Filter, 1 to Enable. Use default setting if value=-1
-                'depth_image_filter': -1,
+                'depth_image_filter': 1,
                 # AMPLITITUD value sett. Use default setting if value=-1
                 'filter_amplititud_value': -1,
                 # MEDIAN value sett. Use default setting if value=-1
