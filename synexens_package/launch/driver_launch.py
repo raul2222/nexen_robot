@@ -10,7 +10,7 @@ def generate_launch_description():
             name='synexens_ros',
             parameters=[{
                 # Prefix added to tf frame IDs. It typically contains a trailing '_' unless empty.
-                'tf_prefix': 'sy3_',  
+                'tf_prefix': 'face_link',  
                 # Enable or disable the depth camera
                 'depth_enabled': True,
                 # The resolution of the depth frame. Options are: 240P, 480P
