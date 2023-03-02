@@ -22,9 +22,9 @@ def generate_launch_description():
                 # Resolution at which to run the color camera. Valid options: 1080P
                 'color_resolution': '1080P',
                 # The FPS of the RGB and Depth cameras. Options are: 5, 7, 15, 30
-                'fps': 15,
+                'fps': 30,
                 # Generate a point cloud from depth data. Requires depth_enabled
-                'point_cloud_enabled': True,
+                'point_cloud_enabled': False,
                 # True if mapped depth in color space should be enabled, only valid in depth480P rgb1080P
                 'depth_to_rgb_enabled': False,
                 # True if mapped color in depth space should be enabled, only valid in depth480P rgb1080P
@@ -34,9 +34,9 @@ def generate_launch_description():
                 # The Exposure of the Depth cameras. Valid value range: > 0, Use default setting if value=-1
                 'exposure': -1,
                 # The Min Value of the Depth cameras Exposure Range. Valid value range: > 0, Use default setting if value=-1
-                'exposure_range_min': -1,
+                'exposure_range_min': 10,
                 # The Max Value of the Depth cameras Exposure Range. Valid value range: > 0, Use default setting if value=-1
-                'exposure_range_max': -1,
+                'exposure_range_max': 4000,
                 # The Min Value of Depth Map Display Distance in mm. Use default setting if value=-1
                 'distance_range_min': -1,
                 # The Max Value of Depth Map Display Distance in mm. Use default setting if value=-1

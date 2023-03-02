@@ -133,7 +133,7 @@ void SynexensCalibrationTransformData::getRgbCameraInfo(sensor_msgs::msg::Camera
 // Publish a TF link so the URDF model and the depth camera line up correctly
 #define DEPTH_CAMERA_OFFSET_MM_X 0.0f
 #define DEPTH_CAMERA_OFFSET_MM_Y 0.0f
-#define DEPTH_CAMERA_OFFSET_MM_Z 1.8f // The depth camera is shifted 1.8mm up in the depth window
+#define DEPTH_CAMERA_OFFSET_MM_Z 0.0f // The depth camera is shifted 1.8mm up in the depth window
 
 tf2::Vector3 SynexensCalibrationTransformData::getDepthToBaseTranslationCorrection()
 {
@@ -149,10 +149,12 @@ tf2::Quaternion SynexensCalibrationTransformData::getDepthToBaseRotationCorrecti
                                          // camera_base
     tf2::Quaternion depth_rotation;      // K4A has one physical camera that is about 6 degrees downward facing.
 
-    depth_rotation.setEuler(0, angles::from_degrees(-6.0), 0);
+    depth_rotation.setEuler(angles::from_degrees(15.0), 0, 0);
+    //depth_rotation.setEuler(angles::from_degrees(90.0), angles::from_degrees(90.0), angles::from_degrees(90.0));
     ros_camera_rotation.setEuler(M_PI / -2.0f, M_PI, (M_PI / 2.0f));
-
-    return ros_camera_rotation * depth_rotation;
+    //ros_camera_rotation.setEuler(-1, -1, -1);
+    //return ros_camera_rotation * depth_rotation;
+    return ros_camera_rotation ;
 }
 
 void SynexensCalibrationTransformData::publishDepthToBaseTf(rclcpp::Node::SharedPtr nd)
@@ -160,8 +162,8 @@ void SynexensCalibrationTransformData::publishDepthToBaseTf(rclcpp::Node::Shared
     // This is a purely cosmetic transform to make the base model of the URDF look good.
     geometry_msgs::msg::TransformStamped static_transform;
     static_transform.header.stamp = rclcpp::Clock().now();
-    static_transform.header.frame_id = tf_prefix_ + camera_base_frame_;
-    static_transform.child_frame_id = tf_prefix_ + depth_camera_frame_;
+    static_transform.header.frame_id = "camera_link";
+    static_transform.child_frame_id = "camera_link_optical";
 
     tf2::Vector3 depth_translation = getDepthToBaseTranslationCorrection();
     static_transform.transform.translation.x = depth_translation.x();
